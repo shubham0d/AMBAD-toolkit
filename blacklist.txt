@@ -1,0 +1,4 @@
+brk
+fstat
+mmap
+exit_group

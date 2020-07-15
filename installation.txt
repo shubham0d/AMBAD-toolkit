@@ -1,0 +1,5 @@
+
+sudo apt install strace
+sudo apt install npm
+sudo npm i -g b3-strace-parser
+sudo apt install python3 python-pip jq
