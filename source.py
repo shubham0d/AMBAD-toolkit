@@ -32,21 +32,28 @@ def formatter(entry):
     "syscall": entry['syscall'],
     "check_args": True,
     "next_call_is_preceding": True,
+    "multiple": False
     }
 
     #Parsing the arguments
     for i in range(0, no_of_args):
-        # To combine the flag dict in a single string
+        # To convert the arg of type dict in a list
         if (type(entry['args'][i]) is dict):
-            flag_arg = []
-            for j in range(0, len(entry['args'][i]['value'])):
-                if j == 0:
-                    flag_0th_string = entry['args'][i]['name']+entry['args'][i]['value'][0]
-                    flag_arg.append(flag_0th_string)
-                else:
-                    flag_arg.append(entry['args'][i]['value'][j])
-            entry_list['argument'+str(i)] = flag_arg
+            # if name, value pair is present in dict
+            if entry['args'][i].get('name') and entry['args'][i].get('value'):
+                flag_arg = []
+                for j in range(0, len(entry['args'][i]['value'])):
+                    if j == 0:
+                        flag_0th_string = entry['args'][i]['name']+entry['args'][i]['value'][0]
+                        flag_arg.append(flag_0th_string)
+                    else:
+                        flag_arg.append(entry['args'][i]['value'][j])
+                entry_list['argument'+str(i)] = flag_arg
 
+
+
+        # When arg type is int.
+        # TODO: Later add support for hex arguments(current decimal)
         elif (type(entry['args'][i]) is int):
             entry_list['argument'+str(i)] = entry['args'][i]
         else:
