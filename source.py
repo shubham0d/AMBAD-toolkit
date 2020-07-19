@@ -26,13 +26,12 @@ def filter_blacklist(data):
 
 def formatter(entry):
     no_of_args = len(entry['args'])
-    print(no_of_args)
     i = '10'
     entry_list = {
     "syscall": entry['syscall'],
     "check_args": True,
     "next_call_is_preceding": True,
-    "multiple": False
+    "multi_instance": False
     }
 
     #Parsing the arguments
@@ -49,9 +48,8 @@ def formatter(entry):
                     else:
                         flag_arg.append(entry['args'][i]['value'][j])
                 entry_list['argument'+str(i)] = flag_arg
-
-
-
+            else:
+                entry_list['argument'+str(i)] = entry['args'][i]
         # When arg type is int.
         # TODO: Later add support for hex arguments(current decimal)
         elif (type(entry['args'][i]) is int):
@@ -59,14 +57,16 @@ def formatter(entry):
         else:
             entry_list['argument'+str(i)] = entry['args'][i]
     #y = json.loads(x)
-    print(entry_list)
+    #print(entry_list)
+    return entry_list
 
 def parse_strace():
     data = [json.loads(line) for line in open('input.json', 'r')]
     remove("input.json")
     data = filter_blacklist(data)
     for i in range(0, len(data)):
-        formatter(data[i])
+        data[i] = formatter(data[i])
+    print(data)
     #print(data[0]['args'][1])
 
 # use -f option in strace

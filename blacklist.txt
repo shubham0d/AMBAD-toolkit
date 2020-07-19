@@ -1,6 +1,5 @@
 brk
 fstat
-mmap
 exit_group
 read
 pread64
