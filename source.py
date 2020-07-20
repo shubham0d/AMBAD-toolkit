@@ -60,22 +60,36 @@ def formatter(entry):
     #print(entry_list)
     return entry_list
 
+def save_json_output(data):
+    print(type(data))
+    checker_file = open('checker.json', 'w')
+    #json.loads(s, kwds)
+    #checker_file.write(json.dumps(data, indent=1))
+    print(json.dumps(data[1], indent=0))
+    checker_file.write(json.dumps(data, indent=0))
+    checker_file.close()
+    return
+
+
+
 def parse_strace():
     data = [json.loads(line) for line in open('input.json', 'r')]
     remove("input.json")
     data = filter_blacklist(data)
+    #print(data[0])
     for i in range(0, len(data)):
         data[i] = formatter(data[i])
-    print(data)
+    #print(json.dumps(data, indent=1))
+    save_json_output(data)
     #print(data[0]['args'][1])
 
 # use -f option in strace
 
 def main():
-    if len(sys.argv) == 1:
-        print ("Usage: python", sys.argv[0] , "<process to execute>")
+    if len(sys.argv) != 3:
+        print ("Usage: python", sys.argv[0] , "<checker|target> <cmd inside quotes>")
         return
-    process_with_param = sys.argv[1]
+    process_with_param = sys.argv[2]
     #saving the strace output in rawoutput.log
     subprocess.getstatusoutput("strace -f -o rawoutput.log " + process_with_param)
     subprocess.getstatusoutput("cat rawoutput.log |& b3 > input.json")
