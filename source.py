@@ -26,13 +26,18 @@ def filter_blacklist(data):
 
 def formatter(entry):
     no_of_args = len(entry['args'])
-    i = '10'
-    entry_list = {
-    "syscall": entry['syscall'],
-    "check_args": True,
-    "next_call_is_preceding": True,
-    "multi_instance": False
-    }
+
+    if sys.argv[1] == "checker":
+        entry_list = {
+        "syscall": entry['syscall'],
+        "check_args": True,
+        "next_call_is_preceding": True,
+        "multi_instance": False
+        }
+    else:
+        entry_list = {
+        "syscall": entry['syscall']
+        }
 
     #Parsing the arguments
     for i in range(0, no_of_args):
@@ -61,13 +66,15 @@ def formatter(entry):
     return entry_list
 
 def save_json_output(data):
-    print(type(data))
-    checker_file = open('checker.json', 'w')
+    if sys.argv[1] == "checker":
+        file_handle = open('checker.json', 'w')
+    else:
+        file_handle = open('target_dump.json', 'w')
     #json.loads(s, kwds)
     #checker_file.write(json.dumps(data, indent=1))
     print(json.dumps(data[1], indent=0))
-    checker_file.write(json.dumps(data, indent=0))
-    checker_file.close()
+    file_handle.write(json.dumps(data, indent=0))
+    file_handle.close()
     return
 
 
@@ -85,11 +92,18 @@ def parse_strace():
 
 # use -f option in strace
 
+def banner():
+    print ("Usage: python", sys.argv[0] , "<checker|target> <cmd inside quotes>")
+
 def main():
     if len(sys.argv) != 3:
-        print ("Usage: python", sys.argv[0] , "<checker|target> <cmd inside quotes>")
+        banner()
         return
     process_with_param = sys.argv[2]
+    print(sys.argv[1])
+    if(sys.argv[1] not in ['checker', 'target']):
+        banner()
+        return
     #saving the strace output in rawoutput.log
     subprocess.getstatusoutput("strace -f -o rawoutput.log " + process_with_param)
     subprocess.getstatusoutput("cat rawoutput.log |& b3 > input.json")
