@@ -3,7 +3,7 @@ import json
 import subprocess
 import sys
 from os import remove
-
+from comparison import calls_comparison
 #
 # will remove the blacklisted syscalls
 # TODO: add comment support in blacklist file
@@ -90,7 +90,8 @@ def parse_strace():
     save_json_output(data)
     #print(data[0]['args'][1])
 
-# use -f option in strace
+
+
 
 def banner():
     print ("Usage: python", sys.argv[0] , "<checker|target> <cmd inside quotes>")
@@ -108,6 +109,8 @@ def main():
     subprocess.getstatusoutput("strace -f -o rawoutput.log " + process_with_param)
     subprocess.getstatusoutput("cat rawoutput.log |& b3 > input.json")
     parse_strace()
+    if (sys.argv[1] == 'target'):
+        calls_comparison()
 
 
 main()
