@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import json
 
-
+# only god knows how this funtion works;)
 def compare_calls(checker_data, target_data):
     # a list to keep track of which element is matched and which doesn't
     sequence_matched = []
@@ -40,10 +40,6 @@ def compare_calls(checker_data, target_data):
             else:
                 sequence_matched.append(False)
                 break
-                # if we reach end of target_data list
-                if target_offset == len(target_data)-1:
-                    print('one comparison fail')
-                    sequence_matched.append(False)
 
         else:
             for j in range(target_offset, len(target_data)):
@@ -58,9 +54,8 @@ def compare_calls(checker_data, target_data):
                         for k in range(3, len(checker_call)):
                             if list(checker_call.items())[k][0] in target_call:
                                 # if checker's argument[i] == target's argument[i]
-                                if checker_call[list(checker_call.items())[k][0]] == target_call[list(checker_call.items())[k][0]]:
-                                    arg_matched = True
-                                else:
+                                #print("ffffffffff", target_call[list(checker_call.items())[k][0]])
+                                if checker_call[list(checker_call.items())[k][0]] != target_call[list(checker_call.items())[k][0]]:
                                     arg_matched = False
                                     break
                             else:
@@ -70,7 +65,10 @@ def compare_calls(checker_data, target_data):
                             sequence_matched.append(True)
                             break
                         else:
-                            break
+                            # if its a last element then set sequence_matched to false
+                            if target_offset == len(target_data)-1:
+                                sequence_matched.append(False)
+                                break
                     else:
                         sequence_matched.append(True)
                 else:
