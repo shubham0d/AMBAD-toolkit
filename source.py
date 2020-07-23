@@ -3,7 +3,7 @@ import json
 import subprocess
 import sys
 from os import remove
-from comparison import calls_comparison
+from comparison import comparison_main
 #
 # will remove the blacklisted syscalls
 # TODO: add comment support in blacklist file
@@ -31,8 +31,7 @@ def formatter(entry):
         entry_list = {
         "syscall": entry['syscall'],
         "check_args": True,
-        "next_call_is_preceding": True,
-        "multi_instance": False
+        "next_call_is_preceding": False
         }
     else:
         entry_list = {
@@ -72,7 +71,6 @@ def save_json_output(data):
         file_handle = open('target_dump.json', 'w')
     #json.loads(s, kwds)
     #checker_file.write(json.dumps(data, indent=1))
-    print(json.dumps(data[1], indent=0))
     file_handle.write(json.dumps(data, indent=0))
     file_handle.close()
     return
@@ -101,7 +99,6 @@ def main():
         banner()
         return
     process_with_param = sys.argv[2]
-    print(sys.argv[1])
     if(sys.argv[1] not in ['checker', 'target']):
         banner()
         return
@@ -110,7 +107,12 @@ def main():
     subprocess.getstatusoutput("cat rawoutput.log |& b3 > input.json")
     parse_strace()
     if (sys.argv[1] == 'target'):
-        calls_comparison()
-
+        result = comparison_main()
+        if result == True:
+            print('Target Matched!!')
+        else:
+            print('Target differs!!')
+    else:
+        print('checker.json generated')
 
 main()
