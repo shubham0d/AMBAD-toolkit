@@ -4,6 +4,7 @@ import subprocess
 import sys
 from os import remove
 from comparison import comparison_main
+from time import sleep
 #
 # will remove the blacklisted syscalls
 # TODO: add comment support in blacklist file
@@ -104,7 +105,13 @@ def main():
         return
     #saving the strace output in rawoutput.log
     subprocess.getstatusoutput("strace -f -o rawoutput.log " + process_with_param)
+    print("System calls captured!!")
+    sleep(2)
+    # for ubuntu use following
+    # subprocess.Popen(["/bin/bash", "-c" , "cat rawoutput.log |& b3 > input.json"])
     subprocess.getstatusoutput("cat rawoutput.log |& b3 > input.json")
+    print("System calls saved!!")
+    sleep(2)
     parse_strace()
     if (sys.argv[1] == 'target'):
         result = comparison_main()
