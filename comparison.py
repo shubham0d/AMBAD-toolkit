@@ -71,10 +71,12 @@ def compare_calls(checker_data, target_data):
                                 break
                     else:
                         sequence_matched.append(True)
+                        break
                 else:
                     # if we reach end of target_data list
                     if target_offset == len(target_data)-1:
                         sequence_matched.append(False)
+                        break
     if False in sequence_matched:
         return False
     else:
