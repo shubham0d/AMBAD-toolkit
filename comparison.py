@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import json
-
+from os import listdir
 # only god knows how this funtion works;)
 def compare_calls(checker_data, target_data):
     # a list to keep track of which element is matched and which doesn't
@@ -83,12 +83,23 @@ def compare_calls(checker_data, target_data):
         return True
 
 def comparison_main():
-    #open both the json files
-    checker_file = open('checker.json', 'r')
+    signatures_files = listdir("./Signatures")
+    if len(signatures_files) == 0:
+        print("No signatures found\n Exiting")
+        exit()
     target_file = open('target_dump.json', 'r')
-    checker_data = json.loads(checker_file.read())
     target_data = json.loads(target_file.read())
-    #close both the file
-    checker_file.close()
     target_file.close()
-    return compare_calls(checker_data, target_data)
+    matched = False
+    for i in range(0, len(signatures_files)):
+        if signatures_files[i][-4:] == 'json':
+            detector_file = open('Signatures/'+signatures_files[i], 'r')
+            detector_data = json.loads(detector_file.read())
+            detector_file.close()
+            if compare_calls(detector_data, target_data):
+                print("Detector ", signatures_files[i], " - Matched")
+                matched = True
+            else:
+                print("Detector ", signatures_files[i], " - Differs")
+
+    return matched

@@ -55,7 +55,6 @@ def formatter(entry):
             # if name, value pair is present in dict
             if entry['args'][i].get('name') and entry['args'][i].get('value'):
                 flag_arg = []
-                print(type(entry['args'][i]['value']))
                 # TODO: fix the issue when value type is int
                 if type(entry['args'][i]['value']) is list:
                     for j in range(0, len(entry['args'][i]['value'])):
