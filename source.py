@@ -9,13 +9,22 @@ from time import sleep
 # will remove the blacklisted syscalls
 # TODO: add comment support in blacklist file
 #
-def filter_blacklist(data):
+def filter_data(data):
     # removing the first syscall since its always execve of the process
     data.pop(0)
     # remove the last line which is the exit getstatusoutput
     data.pop(len(data)-1)
+    # remove the non SYSCALL type data
+    i = 0
+    while i < len(data):
+        if data[i]['type'] != "SYSCALL":
+            data.pop(i)
+            i = 0
+        i = i + 1
+    # remove the syscall present in blacklist
     with open('blacklist.txt') as f:
         blacklist = f.read().splitlines()
+    f.close()
     i = 0
     while i < len(data):
         if data[i]['syscall'] in blacklist:
@@ -46,12 +55,17 @@ def formatter(entry):
             # if name, value pair is present in dict
             if entry['args'][i].get('name') and entry['args'][i].get('value'):
                 flag_arg = []
-                for j in range(0, len(entry['args'][i]['value'])):
-                    if j == 0:
-                        flag_0th_string = entry['args'][i]['name']+entry['args'][i]['value'][0]
-                        flag_arg.append(flag_0th_string)
-                    else:
-                        flag_arg.append(entry['args'][i]['value'][j])
+                print(type(entry['args'][i]['value']))
+                # TODO: fix the issue when value type is int
+                if type(entry['args'][i]['value']) is list:
+                    for j in range(0, len(entry['args'][i]['value'])):
+                        if j == 0:
+                            flag_0th_string = entry['args'][i]['name']+entry['args'][i]['value'][0]
+                            flag_arg.append(flag_0th_string)
+                        else:
+                            flag_arg.append(entry['args'][i]['value'][j])
+                #elif if type(entry['args'][i]['value']) is int:
+                    #flag_arg.append(entry['args'][i]['value'])
                 entry_list['argument'+str(i)] = flag_arg
             else:
                 entry_list['argument'+str(i)] = entry['args'][i]
@@ -81,7 +95,7 @@ def save_json_output(data):
 def parse_strace():
     data = [json.loads(line) for line in open('input.json', 'r')]
     remove("input.json")
-    data = filter_blacklist(data)
+    data = filter_data(data)
     #print(data[0])
     for i in range(0, len(data)):
         data[i] = formatter(data[i])
