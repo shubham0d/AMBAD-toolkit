@@ -97,9 +97,9 @@ def comparison_main():
             detector_data = json.loads(detector_file.read())
             detector_file.close()
             if compare_calls(detector_data, target_data):
-                print("Detector ", signatures_files[i], " - Matched")
+                print("Signature ", signatures_files[i], " - Matched")
                 matched = True
             else:
-                print("Detector ", signatures_files[i], " - Differs")
+                print("Signature ", signatures_files[i], " - Differs")
 
     return matched

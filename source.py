@@ -37,7 +37,7 @@ def filter_data(data):
 def formatter(entry):
     no_of_args = len(entry['args'])
 
-    if sys.argv[1] == "checker":
+    if sys.argv[1] == "generate":
         entry_list = {
         "syscall": entry['syscall'],
         "check_args": True,
@@ -79,12 +79,12 @@ def formatter(entry):
     return entry_list
 
 def save_json_output(data):
-    if sys.argv[1] == "checker":
-        file_handle = open('checker.json', 'w')
+    if sys.argv[1] == "generate":
+        file_handle = open('signature.json', 'w')
     else:
         file_handle = open('target_dump.json', 'w')
     #json.loads(s, kwds)
-    #checker_file.write(json.dumps(data, indent=1))
+    #generate_file.write(json.dumps(data, indent=1))
     file_handle.write(json.dumps(data, indent=0))
     file_handle.close()
     return
@@ -106,14 +106,14 @@ def parse_strace():
 
 
 def banner():
-    print ("Usage: python", sys.argv[0] , "<checker|target> <cmd inside quotes>")
+    print ("Usage: python", sys.argv[0] , "<generate|analyse> <cmd inside quotes>")
 
 def main():
     if len(sys.argv) != 3:
         banner()
         return
     process_with_param = sys.argv[2]
-    if(sys.argv[1] not in ['checker', 'target']):
+    if(sys.argv[1] not in ['generate', 'analyse']):
         banner()
         return
     #saving the strace output in rawoutput.log
@@ -126,13 +126,13 @@ def main():
     print("System calls saved!!")
     sleep(2)
     parse_strace()
-    if (sys.argv[1] == 'target'):
+    if (sys.argv[1] == 'analyse'):
         result = comparison_main()
         if result == True:
             print('Target Matched!!')
         else:
             print('Target differs!!')
     else:
-        print('checker.json generated')
+        print('signature.json generated')
 
 main()

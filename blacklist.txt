@@ -4,3 +4,5 @@ exit_group
 read
 pread64
 pread
+munmap
+mmap
