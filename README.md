@@ -1,2 +1,2 @@
-# AMBD-framework
-Advance Malware Behaviour Detection framework
+# AMBAD-toolkit
+Advance Malware Behaviour Analysis and Detection Toolkit
