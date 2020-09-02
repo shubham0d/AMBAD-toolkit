@@ -6,7 +6,7 @@ from shutil import rmtree
 from os import stat
 from pwd import getpwuid
 import os
-
+from os import remove
 
 def cmd(cmd):
     cmd = cmd.split()
@@ -68,12 +68,14 @@ qemu-system-mips -M malta \
   -kernel vmlinux-4.9.0-8-4kc-malta \
   -initrd ./boot/initrd.img-4.9.0-8-4kc-malta \
   -append "root=/dev/sda1 console=ttyS0 nokaslr" \
-  -nographic \
+  -nographic -net user,hostfwd=tcp::2222-:22 -net nic
 '''
 
 def poweronVm():
+    remove("data/snapshot_"+sys.argv[2])
+    subprocess.getstatusoutput('qemu-img create -f qcow2 -b data/'+sys.argv[2]+'.img data/snapshot_'+sys.argv[2]+'.img')
     print("Starting the machine...")
-    subprocess.getstatusoutput('qemu-system-mips -M malta  -m 512 -hda data/'+sys.argv[2]+'.img kernel data/boot/vmlinux-4.19.0-10-4kc-malta ' \
+    subprocess.getstatusoutput('qemu-system-mips -M malta  -m 512 -hda data/snapshot_'+sys.argv[2]+'.img kernel data/boot/vmlinux-4.19.0-10-4kc-malta ' \
     '-initrd data/boot/initrd.img-4.9.0-8-4kc-malta -append \"root=/dev/sda1 console=ttyS0 nokaslr\" --nographic -net user,hostfwd=tcp::2222-:22 -net nic')
     print("VM started successfully")
 
