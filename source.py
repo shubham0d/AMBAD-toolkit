@@ -5,10 +5,24 @@ import sys
 from os import remove
 from comparison import comparison_main
 from time import sleep
+
 #
 # will remove the blacklisted syscalls
 # TODO: add comment support in blacklist file
 #
+
+def get_remote_data():
+    if (sys.argv[2][0:2] == './'):
+        file_to_execute = sys.argv[2][2:].split(' ')[0]
+        os.system('scp -P 2222 '+file_to_execute+' root@127.0.0.1:'+file_to_execute)
+    os.system('ssh root@localhost -p 2222 \'strace -f -o rawoutput.log '+sys.argv[2]+' &\'')
+    sleep(3)
+    os.system('scp -P 2222 root@127.0.0.1:rawoutput.log rawoutput.log')
+
+
+
+
+
 def filter_data(data):
     # removing the first syscall since its always execve of the process
     data.pop(0)
@@ -117,7 +131,8 @@ def main():
         banner()
         return
     #saving the strace output in rawoutput.log
-    subprocess.getstatusoutput("strace -f -o rawoutput.log " + process_with_param)
+    get_remote_data()
+    #subprocess.getstatusoutput("strace -f -o rawoutput.log " + process_with_param)
     print("System calls captured!!")
     sleep(2)
     # for ubuntu use following
