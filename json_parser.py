@@ -22,7 +22,7 @@ def savein_db(dbjson):
     if isinstance(file_data, list):
         Collection.insert_many(file_data)
     else:
-        Collection.insert_one(file_data) 
+        Collection.insert_one(file_data)
 
 def generate_dbjson(filehash, json_file):
     dbjson = {
@@ -53,6 +53,9 @@ def findhash(filename):
     md5_hash.update(content)
     digest = md5_hash.hexdigest()
     return digest
+
+def banner():
+    print ("Usage: python", sys.argv[0] , "<executable> <jsonfile>")
 
 def main():
     if len(sys.argv) != 3:
