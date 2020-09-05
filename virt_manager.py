@@ -72,11 +72,15 @@ qemu-system-mips -M malta \
 '''
 
 def poweronVm():
-    remove("data/snapshot_"+sys.argv[2])
-    subprocess.getstatusoutput('qemu-img create -f qcow2 -b data/'+sys.argv[2]+'.img data/snapshot_'+sys.argv[2]+'.img')
+    if os.path.exists("data/snapshot_"+sys.argv[2]+".img"):
+        remove("data/snapshot_"+sys.argv[2]+".img")
+    os.chdir('data')
+    subprocess.getstatusoutput('qemu-img create -f qcow2 -b '+sys.argv[2]+'.img snapshot_'+sys.argv[2]+'.img')
+    os.chdir('../')
     print("Starting the machine...")
-    subprocess.getstatusoutput('qemu-system-mips -M malta  -m 512 -hda data/snapshot_'+sys.argv[2]+'.img kernel data/boot/vmlinux-4.19.0-10-4kc-malta ' \
-    '-initrd data/boot/initrd.img-4.9.0-8-4kc-malta -append \"root=/dev/sda1 console=ttyS0 nokaslr\" --nographic -net user,hostfwd=tcp::2222-:22 -net nic')
+    sleep(2)
+    os.system('qemu-system-mips -M malta  -m 512 -hda data/snapshot_'+sys.argv[2]+'.img -kernel data/boot/vmlinux-4.19.0-10-4kc-malta ' \
+    '-initrd data/boot/initrd.img-4.19.0-10-4kc-malta -append \"root=/dev/sda1 console=ttyS0 nokaslr\" --nographic -net user,hostfwd=tcp::2222-:22 -net nic')
     print("VM started successfully")
 
 def vm_start():

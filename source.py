@@ -3,6 +3,7 @@ import json
 import subprocess
 import sys
 from os import remove
+import os
 from comparison import comparison_main
 from time import sleep
 
@@ -12,6 +13,7 @@ from time import sleep
 #
 
 def get_remote_data():
+    print("You are require to enter password multiple times")
     if (sys.argv[2][0:2] == './'):
         file_to_execute = sys.argv[2][2:].split(' ')[0]
         os.system('scp -P 2222 '+file_to_execute+' root@127.0.0.1:'+file_to_execute)
