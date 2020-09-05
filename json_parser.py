@@ -4,7 +4,7 @@ import subprocess
 import sys
 from os import remove
 import hashlib
-from pymongo import MongoClient
+#from pymongo import MongoClient
 
 def savein_db(dbjson):
     myclient = MongoClient("mongodb://localhost:27017/")
@@ -35,14 +35,17 @@ def generate_dbjson(filehash, json_file):
     target_file.close()
     for i in range(0, len(target_data)):
         if target_data[i]['syscall'] == 'openat':
-            dbjson['events'].append({"source": "files", "target": target_data[i]['argument1']})
+            dbjson['events'].append({"source": "files", "target": target_data[i]['argument1'] \
+            , "permission": target_data[i]['argument2']})
         if target_data[i]['syscall'] == 'open':
-            dbjson['events'].append({"source": "files", "target": target_data[i]['argument0']})
+            dbjson['events'].append({"source": "files", "target": target_data[i]['argument0'] \
+            , "permission": target_data[i]['argument1']})
         if target_data[i]['syscall'] == 'connect':
-            #print(target_data[i]['argument1']['sin_addr']['params'][0])
-            dbjson['events'].append({"source": "network", "target": target_data[i]['argument1']['sin_addr']['params'][0]})
+            if ('sin_addr' in target_data[i]['argument1']):
+                dbjson['events'].append({"source": "network", "target": target_data[i]['argument1']['sin_addr']['params'][0]})
         if target_data[i]['syscall'] == 'execve':
             dbjson['events'].append({"source": "process", "target": target_data[i]['argument0']})
+    print(dbjson)
     return dbjson
 
 
@@ -65,7 +68,7 @@ def main():
     json_file = sys.argv[2]
     filehash = findhash(filename)
     dbjson = generate_dbjson(filehash, json_file)
-    savein_db()
+    #savein_db()
 
 
 
