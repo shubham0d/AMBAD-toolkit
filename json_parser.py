@@ -4,6 +4,7 @@ import subprocess
 import sys
 from os import remove
 import hashlib
+from datetime import datetime
 #from pymongo import MongoClient
 
 def savein_db(dbjson):
@@ -27,6 +28,7 @@ def savein_db(dbjson):
 def generate_dbjson(filehash, json_file):
     dbjson = {
     "hash": filehash,
+    "timestamp": str(datetime.now()),
     "events": []
     }
     #print(dbjson)
